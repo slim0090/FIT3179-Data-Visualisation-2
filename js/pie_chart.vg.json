@@ -1,0 +1,42 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 200,
+    "height": 200,
+    "data": {
+      "url": "https://raw.githubusercontent.com/slim0090/FIT3179-Data-Visualisation-2/main/data/world_population.csv"
+    },
+    "encoding": {
+      "color": {
+        "field": "Continent",
+         "type": "nominal", 
+         "legend": null
+        },
+      
+      "theta": {"field": "Population", "type": "quantitative", "stack": true, "aggregate": "sum"},
+      "order": {"field": "Population", "type": "quantitative", "aggregate": "sum", "sort": "ascending"}
+    },
+    "layer": [{
+      "mark": {"type": "arc", "outerRadius": 150, "innerRadius": 100, "tooltip": true}
+    },
+    {
+      "mark": {"type": "text", "radius": 175},
+      "encoding": {
+        "text": {"field": "Continent", "type": "nominal"},
+        "opacity": {
+          "condition": {
+            "test": "datum['Continent'] == 'Asia' || datum['Continent'] == 'Europe' || datum['Continent'] == 'South America' || datum['Continent'] == 'Africa' || datum['Continent'] == 'North America'",
+            "value": 1
+          },
+          "value": 0
+        }
+      }
+    },
+    {
+      "mark": {"type": "text", "radius": 0, "fontSize":18},
+      "encoding": {
+        "text": {"value": "Continent Population"},
+        "color": {"value": "black"}
+      }
+    }    
+  ]
+}
