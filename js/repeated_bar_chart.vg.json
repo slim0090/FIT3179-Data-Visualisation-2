@@ -37,6 +37,7 @@
                     },
                     {
                         "field": {"repeat": "repeat"},
+                        "aggregate": "sum",
                         "type": "quantitative",
                         "title": "Population",
                         "format": ","
