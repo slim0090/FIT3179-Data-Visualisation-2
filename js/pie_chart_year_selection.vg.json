@@ -1,0 +1,159 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 200,
+    "height": 200,
+    "data": {
+      "url": "https://raw.githubusercontent.com/slim0090/FIT3179-Data-Visualisation-2/main/data/final_world_population.csv"
+    },
+    "transform": [
+      {
+        "lookup": "Population",
+        "from": {
+          "data": {
+            "url": "https://raw.githubusercontent.com/slim0090/FIT3179-Data-Visualisation-2/main/data/final_world_population.csv"
+          },
+          "key": "Population",
+          "fields": ["Continent", "Year"]
+        }
+      },
+      {"filter": "datum.Year==Year"},
+      {
+        "joinaggregate": [{
+          "op": "sum",
+          "field": "Population",
+          "as": "TotalPopulation"
+        }]
+      }
+    ],
+    "params": [
+      {
+        "name": "Year",
+        "value": 2022,
+        "bind": {
+          "input": "select",
+          "options": [
+            1970,
+            1980,
+            1990,
+            2000,
+            2010,
+            2015,
+            2020,
+            2022
+          ],
+          "labels": [
+            "1970",
+            "1980",
+            "1990",
+            "2000",
+            "2010",
+            "2015",
+            "2020",
+            "2022"
+          ],
+          "name": "Year Selection: "
+        }
+      }
+    ],
+    "encoding": {
+      "color": {
+        "field": "Continent",
+         "type": "nominal", 
+         "legend": null,
+         "scale": {
+          "domain": [
+            "Asia",
+            "Europe",
+            "Africa",
+            "North America",
+            "South America",
+            "Oceania"
+          ],
+          "range": [
+            "#e41a1c",
+            "#ff7f00",
+            "#a65628",
+            "#377eb8",
+            "#984ea3",
+            "#a6cee3"
+          ]
+        }
+        },
+      "theta": {"field": "Population", "type": "quantitative", "stack": true, "aggregate": "sum"},
+      "order": {"field": "Population", "type": "quantitative", "aggregate": "sum", "sort": "ascending"}
+    },
+    "layer": [{
+      "mark": {"type": "arc", "outerRadius": 150, "innerRadius": 100, "tooltip": true},
+      "transform": [
+        {"calculate": "datum.Population/datum.TotalPopulation * 100", "as": "PopulationPercentage"}
+      ],
+      "encoding": {
+        "tooltip": [
+          {"field": "Continent", "type": "nominal"},
+          {"field": "Population", "type": "quantitative", "format": ",", "aggregate": "sum", "title": "Population"},
+          {"field": "PopulationPercentage", "type": "quantitative", "aggregate": "sum", "format": ".2f", "title": "Percentange (%)"},
+          {"field": "Year", "type": "nominal"}
+        ]
+      }
+    },
+    {
+      "transform": [
+        {"calculate": "datum.Population/datum.TotalPopulation * 100", "as": "PopulationPercentage"},
+        {
+          "joinaggregate": [{
+            "op": "sum",
+            "field": "PopulationPercentage",
+            "as": "TotalPercentage"
+          }],
+          "groupby": ["Continent"]
+        },
+        {
+          "calculate": "datum.TotalPercentage/100",
+          "as": "text_annotation_raw"
+        },
+        {
+          "calculate": "split(datum.text_annotation_raw, ';')",
+          "as": "text_annotation"
+        }
+      ],
+      "mark": {"type": "text", "radius": 175},
+      "encoding": {
+        "text": {
+          "field": "text_annotation",
+          "type": "quantitative",
+          "format": ".2%"
+        },
+        "opacity": {
+          "condition": {
+            "test": "datum['Continent'] == 'Asia' || datum['Continent'] == 'Europe' || datum['Continent'] == 'South America' || datum['Continent'] == 'Africa' || datum['Continent'] == 'North America'",
+            "value": 1
+          },
+          "value": 0
+        }
+      }
+    },
+    {
+      "mark": {"type": "text", "radius": 175, "dy": -15},
+      "encoding": {
+        "text": {
+          "field": "Continent",
+          "type": "nominal"
+        },
+        "opacity": {
+          "condition": {
+            "test": "datum['Continent'] == 'Asia' || datum['Continent'] == 'Europe' || datum['Continent'] == 'South America' || datum['Continent'] == 'Africa' || datum['Continent'] == 'North America'",
+            "value": 1
+          },
+          "value": 0
+        }
+      }
+    },
+    {
+      "mark": {"type": "text", "radius": 0, "fontSize":18},
+      "encoding": {
+        "text": {"value": "Population Percentage"},
+        "color": {"value": "black"}
+      }
+    }    
+  ]
+}

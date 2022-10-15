@@ -1,0 +1,77 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {"url": "https://raw.githubusercontent.com/slim0090/FIT3179-Data-Visualisation-2/main/data/final_world_population.csv"},
+    "width": 490,
+    "height": 300,
+    "transform": [
+          {"filter": "datum['Country'] == 'China' || datum['Country'] == 'India' || datum['Country'] == 'United States of America' || datum['Country'] == 'Russia' || datum['Country'] == 'Indonesia'|| datum['Country'] == 'Malaysia'"}
+        ],
+    "encoding": {
+        "x": {  "field": "Year",
+                "type": "ordinal" ,
+                "sort": ["1970","1980","1990","2000","2010","2015","2020","2022"] ,
+                "axis": { "labelAngle": 0 , "labelFontSize": 12 , "titleFontSize": 14}
+                } ,
+        "y": {  "field": "Population",
+                "type": "quantitative",
+                "sort": "ascending"
+                }
+        },
+    "layer": [
+      {
+        "mark": {
+          "type": "text",
+          "align": "center",
+          "baseline": "middle",
+          "dx": -20,
+          "dy": -55,
+          "fontSize": 11.5,
+          "fontStyle": "italic"
+        },
+        "encoding": {
+          "text": {"value": ["From 1970 to 2022,", "China has the growth rate of 73.35%"]},
+          "color": {"value": "black"},
+          "opacity": {
+            "condition": {
+              "test": "datum['Country'] == 'China' && datum['Year'] == '1990'",
+              "value": 1
+            },
+            "value": 0
+          }
+        }
+      },
+      {
+          "mark": {"type": "line", "interpolate": "monotone" },
+          "encoding": {
+              "color": { "field": "Country" } ,
+          "size":{
+              "value": 1
+          },
+          "tooltip": [
+            {"field": "Country", "type": "nominal", "title": "Country"},
+            {"field": "Population", "type": "quantitative", "format": ","},
+            {"field": "Year", "type": "ordinal"}
+          ]
+          }
+          
+      },
+      {
+          "mark": {"type" :"tick", "thickness": 5 },
+          "encoding": {
+              "color": {
+              "field": "Country"
+          },
+          "tooltip": [
+              {"field": "Country", "type": "nominal", "title": "Country"},
+              {"field": "Population", "type": "quantitative", "format": ","},
+              {"field": "Year", "type": "ordinal"}
+            ]
+          }
+  
+      }
+    ],
+    "config": {
+      "legend": {"orient": "bottom"}
+    }
+
+}
